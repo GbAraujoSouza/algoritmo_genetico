@@ -1,4 +1,3 @@
-from unicodedata import decimal
 import numpy as np
 import random as rd
 from funcoes_utilizadas import *
@@ -7,7 +6,7 @@ tamCromossomo=8
 pc=0.95
 pm=0.1
 numGeracoes=5
-tamPopulacao=8  #Criar condição que avalia populações impares
+tamPopulacao=8
 
 # Passo 0: Variáveis do Problema -----------------------------------------------------------
 limInferior = 0
@@ -66,7 +65,7 @@ for geracao in range(numGeracoes):
     valAleatorio = [rd.uniform(0,1) for x in range(tamPopulacao)]
     pais = np.zeros((tamPopulacao,tamCromossomo))
 
-    # 2.2.2: Criar lista pais com os indivíduos selecionados
+    # 2.2.2: Criar matriz "pais" com os indivíduos selecionados
     for valor in range(len(valAleatorio)):  # len(intervalos == quantidade de intervalos)
 
         for intervalo in range(len(intervalos)):
@@ -82,12 +81,25 @@ for geracao in range(numGeracoes):
                 continue
     
     # 2.3: Realizar cruzamento (crossover) nos cromossomos pais selecionados
-    crossover(pais[0,:], pais[1,:], probabilidadeCruzamento=pc)
+    filhos = np.zeros((tamPopulacao,tamCromossomo))
+    # iterar de dois em dois
+    for i in range(len(pais)):
+        if i % 2 == 0: # par
+            if i==(len(pais)-1): # Ultimo elemento
+                # Em caso do numero de individuos ser impar
+                # retornar por ultimo apenas um indivíduo
+                filhos[i] = pais[i]
+            else:
+                filhos[i],filhos[i+1] = crossover(pais[i,:], pais[i+1,:], probabilidadeCruzamento=pc)
+        else: # impar
+            continue
 
+    # 2.4 Realizar mutação
+    for individuo in range(len(filhos)):
+        filhos[individuo] = mutacao(filhos[individuo], probabilidadeMutacao=pm)
 
-    # proximos passos: 
-    # 1.Aplicar o crossover em pais (criar função crossover()) 
-    # 2.Aplicar mutação depois de crossover()
+    # fim da criação da nova geração 
+    pop = filhos
         
 
 # print(p)
@@ -95,5 +107,7 @@ for geracao in range(numGeracoes):
 # print(fitness)
 # print(somaValores)
 # print(valAleatorio)
-# print(pais)
+#print(pais)
+#print()
+#print(filhos)
 #print(intervalos)

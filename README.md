@@ -1,2 +1,2 @@
-# algoritmo_genetico
+# Algoritmo Genético
 algoritmo genético para maximizar uma função
